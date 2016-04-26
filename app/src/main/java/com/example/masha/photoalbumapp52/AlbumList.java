@@ -21,7 +21,7 @@ public class AlbumList {
     private ArrayList<Album> albums;
     private int maxId;
     Context context;
-    public static final String ALBUMS_FILE = "album.dat";
+    public static final String ALBUMS_FILE = "albumlist.dat";
 
     private AlbumList() {
         albums = new ArrayList<Album>();

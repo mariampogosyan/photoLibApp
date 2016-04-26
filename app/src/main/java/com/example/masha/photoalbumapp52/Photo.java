@@ -9,6 +9,7 @@ public class Photo {
     private int id;
 
     public Photo(){
+
         this(null,null);
     }
 
@@ -22,10 +23,12 @@ public class Photo {
     }
 
     public void setPhotoName(String photoName) {
+
         this.photoName = photoName;
     }
 
     public String getFileURL() {
+
         return fileURL;
     }
 

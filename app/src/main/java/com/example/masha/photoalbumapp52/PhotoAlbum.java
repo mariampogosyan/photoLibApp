@@ -43,7 +43,6 @@ public class PhotoAlbum extends AppCompatActivity {
 
         try {
             albumList = AlbumList.getInstance(this);
-            albumList.load();
       } catch (IOException e) {
           Toast.makeText(this, "Error loading albums", Toast.LENGTH_LONG)
                     .show();
@@ -198,4 +197,5 @@ public class PhotoAlbum extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
