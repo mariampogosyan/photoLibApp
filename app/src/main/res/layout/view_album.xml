@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1">
 
@@ -15,7 +17,23 @@
             android:background="?attr/colorPrimary"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <TextView
+                android:id="@+id/album_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_action_plus"
+                android:drawableRight="@drawable/ic_action_plus"
+                android:drawablePadding="5dp"
+                android:paddingTop="6dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:onClick="addPhoto"/>
+
+        </android.support.v7.widget.Toolbar>
 
         <GridView
             android:layout_width="wrap_content"

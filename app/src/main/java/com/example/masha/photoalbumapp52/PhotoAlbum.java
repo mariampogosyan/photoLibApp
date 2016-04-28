@@ -2,6 +2,7 @@ package com.example.masha.photoalbumapp52;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -33,6 +34,8 @@ public class PhotoAlbum extends AppCompatActivity {
     private AlbumList albumList;
     private ListView lv;
     private Album selectedItem;
+
+    public static final int VIEW_ALBUM_CODE=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +157,14 @@ public class PhotoAlbum extends AppCompatActivity {
                     }
 
                 });
+        lv.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        viewAlbum(i);
+                    }
+                }
+        );
     }
     private void deleteSelectedItems() {
         SparseBooleanArray arr = lv.getCheckedItemPositions();
@@ -174,6 +185,18 @@ public class PhotoAlbum extends AppCompatActivity {
         //Toast.makeText(SongLib.this,str,Toast.LENGTH_LONG).show();
       lv.setAdapter(new ArrayAdapter<Album>(this, android.R.layout.simple_list_item_1,albumList.getAlbums()));
 
+    }
+
+    public void viewAlbum (int pos) {
+        Intent intent = new Intent(this, ViewAlbum.class);
+
+        Album album = albumList.getAlbums().get(pos);
+        Bundle bundle = new Bundle();
+        bundle.putString(ViewAlbum.ALBUM_NAME, album.albumName);
+        bundle.putInt(ViewAlbum.ALBUM_ID, album.id);
+        intent.putExtras(bundle);
+
+        startActivity(intent, bundle);
     }
 
     @Override
