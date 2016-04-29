@@ -10,11 +10,10 @@ public class Photo {
 
     public Photo(){
 
-        this(null,null);
+        this(null);
     }
 
-    public Photo(String photoName, String fileURL){
-        this.photoName = photoName;
+    public Photo(String fileURL){
         this.fileURL = fileURL;
     }
 

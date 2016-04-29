@@ -33,4 +33,8 @@ public class Album {
         album.albumName = albumInfo;
         return album;
     }
+
+    public void addPhoto(Photo p) {
+        photos.add(p);
+    }
 }
