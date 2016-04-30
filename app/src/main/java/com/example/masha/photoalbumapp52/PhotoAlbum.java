@@ -8,9 +8,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
+import android.view.ContextMenu;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,16 +27,18 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Mariam on 4/24/2016.
  */
 public class PhotoAlbum extends AppCompatActivity {
-    final Context context = this;
+    Context context;
     String userResponse;
-    private AlbumList albumList;
+    public static List<Album> albums = new ArrayList<>();
     private ListView lv;
     private Album selectedItem;
+    public static int pos;
 
     public static final int VIEW_ALBUM_CODE=1;
 
@@ -41,25 +46,28 @@ public class PhotoAlbum extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_list);
+        try {
+            albums = Album.remake(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        context = this;
+
+       /* if(albums.size() != 0)
+            prgmImages = Drawable.createFromPath(albums.get(0).getPhotos().get(0).getAddress());*/
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
-        try {
-            albumList = AlbumList.getInstance(this);
-      } catch (IOException e) {
-          Toast.makeText(this, "Error loading albums", Toast.LENGTH_LONG)
-                    .show();
-        }
         lv = (ListView) findViewById(R.id.lv);
-
-        lv.setAdapter(
-                new ArrayAdapter<Album>(this, android.R.layout.simple_list_item_1,albumList.getAlbums()));
+        registerForContextMenu(lv);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                selectedItem = (Album)parent.getItemAtPosition(position);
+                selectedItem = (Album) parent.getItemAtPosition(position);
             }
         });
 
@@ -74,6 +82,7 @@ public class PhotoAlbum extends AppCompatActivity {
 //        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,7 +100,15 @@ public class PhotoAlbum extends AppCompatActivity {
                         //Album tmp = new Album();
                         String name =input.getText().toString();
                        // tmp.setAlbumName(name);
-                       albumList.add(name);
+                        Album a = new Album(name);
+                        if(!albums.contains(a)) {
+                            albums.add(a);
+                            try {
+                                Album.make(albums, context);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                       //  arrayAdapter = new ArrayAdapter<Album>(context,R.layout.album,albums);
                        // albumNames.setAdapter(arrayAdapter);
                     }
@@ -107,66 +124,90 @@ public class PhotoAlbum extends AppCompatActivity {
             }
         });
 
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
-        // for contextual action mode
-        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        lv.setMultiChoiceModeListener(
-                new AbsListView.MultiChoiceModeListener() {
-                    @Override
-                    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-                        // Respond to clicks on the actions in the CAB
-                        switch (menuItem.getItemId()) {
-                            case R.id.action_delete:
-                                deleteSelectedItems();
-                                actionMode.finish(); // Action picked, so close the CAB
-                                return true;
-                            default:
-                                return false;
-                        }
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //gview.itemLongClick(position);
+                pos = position;
+                return false;
+            }
+        });
 
-                    }
-
-                    @Override
-                    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                        // Inflate the menu for the CAB
-                        MenuInflater inflater = mode.getMenuInflater();
-                        inflater.inflate(R.menu.delete_menu, menu);
-                        return true;
-                    }
-
-                    @Override
-                    public void onItemCheckedStateChanged(ActionMode mode, int position,
-                                                          long id, boolean checked) {
-                        // Here you can do something when items are selected/de-selected,
-                        // such as update the title in the CAB
-                        mode.setTitle(lv.getCheckedItemCount() +
-                                " selected");
-                    }
-
-                    @Override
-                    public void onDestroyActionMode(ActionMode mode) {
-                        // Here you can make any necessary updates to the activity when
-                        // the CAB is removed. By default, selected items are deselected/unchecked.
-                    }
-
-                    @Override
-                    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                        // Here you can perform updates to the CAB due to
-                        // an invalidate() request
-                        return false;
-                    }
-
-                });
-        lv.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        viewAlbum(i);
-                    }
-                }
-        );
+        lv.setAdapter(
+                new ArrayAdapter<Album>(PhotoAlbum.this, android.R.layout.simple_list_item_1, albums));
     }
-    private void deleteSelectedItems() {
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu_listview, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.rename:
+                //Toast.makeText(Home.this, "Rename was clicked", Toast.LENGTH_SHORT).show();
+                String s = "pretecnd";
+                Album dummy = new Album(s);
+                if(!albums.contains(dummy)) {
+                    albums.remove(pos);
+                    albums.add(pos, dummy);
+
+                    try {
+                        Album.make(albums, context);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    lv.setAdapter(
+                            new ArrayAdapter<Album>(PhotoAlbum.this, android.R.layout.simple_list_item_1, albums));
+                }
+                break;
+            case R.id.delete:
+                //Toast.makeText(Home.this, "Delete was clicked", Toast.LENGTH_SHORT).show();
+
+                android.app.AlertDialog.Builder b = new android.app.AlertDialog.Builder(context);
+                b.setMessage("Are you sure you want to delete?");
+                b.setCancelable(true);
+
+                b.setPositiveButton(
+                        "Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                albums.remove(pos);
+                                try {
+                                    Album.make(albums, context);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                dialog.cancel();
+                                lv.setAdapter(
+                                        new ArrayAdapter<Album>(PhotoAlbum.this, android.R.layout.simple_list_item_1, albums));
+                            }
+                        });
+
+                b.setNegativeButton(
+                        "No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                android.app.AlertDialog a = b.create();
+                a.show();
+                break;
+        }
+        return super.onContextItemSelected(item);
+    }
+
+
+
+
+    /*private void deleteItem() {
         SparseBooleanArray arr = lv.getCheckedItemPositions();
         //String str="";
         // gather songs in a to-delete list
@@ -180,17 +221,21 @@ public class PhotoAlbum extends AppCompatActivity {
             }
         }
         for (Album album: deleteAlbums) {
-            albumList.remove(album);
+            try {
+                Album.make(Home.albums, context);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         //Toast.makeText(SongLib.this,str,Toast.LENGTH_LONG).show();
-      lv.setAdapter(new ArrayAdapter<Album>(this, android.R.layout.simple_list_item_1,albumList.getAlbums()));
+      lv.setAdapter(new ArrayAdapter<Album>(this, android.R.layout.simple_list_item_1,albums));
 
-    }
+    }*/
 
     public void viewAlbum (int pos) {
         Intent intent = new Intent(this, ViewAlbum.class);
 
-        Album album = albumList.getAlbums().get(pos);
+        Album album = albums.get(pos);
         Bundle bundle = new Bundle();
         bundle.putString(ViewAlbum.ALBUM_NAME, album.albumName);
         bundle.putInt(ViewAlbum.ALBUM_ID, album.id);
@@ -205,20 +250,4 @@ public class PhotoAlbum extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 }

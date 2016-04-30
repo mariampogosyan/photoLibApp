@@ -51,7 +51,7 @@ public class AlbumList {
             return null;
         }
 
-        Album album = new Album(maxId, name);
+        Album album = new Album(name);
         if (albums.size() == 0) {
             albums.add(album);
             try {
