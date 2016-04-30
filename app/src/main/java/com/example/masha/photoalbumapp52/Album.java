@@ -1,10 +1,11 @@
 package com.example.masha.photoalbumapp52;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Mariam on 4/24/2016.
  */
-public class Album {
+public class Album implements Serializable {
     public String albumName;
     private ArrayList<Photo> photos;
     public int id;
@@ -33,8 +34,13 @@ public class Album {
         album.albumName = albumInfo;
         return album;
     }
-
+    public ArrayList<Photo> getPhotos() {
+        return photos;
+    }
     public void addPhoto(Photo p) {
         photos.add(p);
+    }
+    public int getSize() {
+        return photos.size();
     }
 }

@@ -1,19 +1,17 @@
 package com.example.masha.photoalbumapp52;
 
+import java.io.Serializable;
+
 /**
  * Created by Mariam on 4/24/2016.
  */
-public class Photo {
+public class Photo implements Serializable {
     private String photoName;
     private String fileURL;
     private int id;
 
-    public Photo(){
 
-        this(null);
-    }
-
-    public Photo(String fileURL){
+     public Photo(String fileURL){
         this.fileURL = fileURL;
     }
 
@@ -27,7 +25,6 @@ public class Photo {
     }
 
     public String getFileURL() {
-
         return fileURL;
     }
 

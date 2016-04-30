@@ -196,7 +196,7 @@ public class PhotoAlbum extends AppCompatActivity {
         bundle.putInt(ViewAlbum.ALBUM_ID, album.id);
         intent.putExtras(bundle);
 
-        startActivity(intent, bundle);
+        startActivity(intent);
     }
 
     @Override

@@ -122,6 +122,7 @@ public class AlbumList {
             this.maxId = maxId;
             fis.close();
 
+
         } catch (FileNotFoundException e) {  // default to initial set
             // load initial set of Albums
 
@@ -174,7 +175,6 @@ public class AlbumList {
     }
 
     public void store() throws IOException {
-        // TO BE FILLED IN
         FileOutputStream fos =
                 context.openFileOutput(ALBUMS_FILE,Context.MODE_PRIVATE);
         PrintWriter pw = new PrintWriter(fos);
@@ -184,6 +184,12 @@ public class AlbumList {
         pw.close();
 
     }
+//    public void addPic(int pos, Photo p) {
+//        albums.get(pos).addPhoto(p);
+//    }
+//    public int sizeCurrent(int pos) {
+//        return albums.get(pos).getSize();
+//    }
 
     public ArrayList<Album> remove(Album album) throws NoSuchElementException {
         int pos = getPos(album);
