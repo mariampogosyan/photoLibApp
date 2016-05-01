@@ -26,10 +26,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -171,6 +173,34 @@ public class ViewAlbum extends AppCompatActivity {
                 break;
 
             case R.id.move:
+                final ArrayAdapter<Album> al = new ArrayAdapter<>(ViewAlbum.this, android.R.layout.simple_list_item_1, PhotoAlbum.albums);
+                AlertDialog.Builder m = new AlertDialog.Builder(this);
+                m.setNegativeButton(
+                        "cancel",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                m.setAdapter(al, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Album a = al.getItem(which);
+                        move(which, PhotoAlbum.pos);
+                        showImg(PhotoAlbum.albums.get(pos).getPhotos());
+                        try {
+                            Album.make(PhotoAlbum.albums, c);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        dialog.cancel();
+                        Toast.makeText(ViewAlbum.this, a.toString() + " (" + which + ") " + " selected", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                m.setTitle("Select which album to move to");
+                AlertDialog n = m.create();
+                n.show();
                 Toast.makeText(ViewAlbum.this, "move was clicked", Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -389,6 +419,17 @@ public class ViewAlbum extends AppCompatActivity {
     public void openViewImage(int pos) {
         Intent intent = new Intent(this, ViewImage.class);
         startActivity(intent);
+    }
+
+    public void move(int alin, int phin) {
+        //alin is album you want to move to
+        // phin is photo you want to move
+        Photo move = PhotoAlbum.albums.get(pos).getPhotos().get(phin);
+        boolean should = PhotoAlbum.albums.get(alin).getPhotos().contains(move);
+        if(!should){
+            PhotoAlbum.albums.get(pos).getPhotos().remove(phin);
+            PhotoAlbum.albums.get(alin).addPhoto(move);
+        }
     }
 
 }
