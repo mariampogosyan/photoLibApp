@@ -99,7 +99,7 @@ public class ViewImage extends ActionBarActivity {
         isclicked = false;
 
         va.imgpos++;
-        if(!(GridViewImg.pos>=va.bitmaps.size())) {
+        if(!(va.imgpos>=va.bitmaps.size())) {
             Bitmap bitmap = va.bitmaps.get(va.imgpos);
             imageView.setImageBitmap(bitmap);
         } else {
