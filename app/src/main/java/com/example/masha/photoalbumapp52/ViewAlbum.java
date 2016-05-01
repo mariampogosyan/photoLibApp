@@ -24,6 +24,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +54,10 @@ public class ViewAlbum extends AppCompatActivity {
     private GridView gv;
     private int albumID;
     private static int pos;
+    public static int imgpos;
+
     private AlbumList albumList;
+    Context c;
     public  static ArrayList<Bitmap> bitmaps = new ArrayList<>();
 
 
@@ -65,6 +69,7 @@ public class ViewAlbum extends AppCompatActivity {
         Toolbar toolbar = (Toolbar)findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
+        c = this;
         gv = (GridView) findViewById(R.id.gridView);
         try {
             albumList = AlbumList.getInstance(this);
@@ -80,6 +85,25 @@ public class ViewAlbum extends AppCompatActivity {
             showImg(PhotoAlbum.albums.get(pos).getPhotos());
         }
         //gv.setAdapter(new ImageAdapter(this, album.getPhotos()));
+
+        gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                imgpos = position;
+                openViewImage(imgpos);
+
+
+
+                //gview.itemClick(position, context);
+                //Toast.makeText(Photos.this, "Deep", Toast.LENGTH_SHORT).show();
+
+
+                //a.add(1, a.get(position));
+                //gridView.setAdapter(new GridAdapter(Photos.this, a,width));
+                //startActivity(new Intent(Photos.this, ViewImage.class).putExtra("Bitmapimg", a.get(position)));
+            }
+        });
 
     }
 
@@ -207,6 +231,8 @@ public class ViewAlbum extends AppCompatActivity {
 
         }
     }
+
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static String getPath(final Context context, final Uri uri) {
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
@@ -288,6 +314,11 @@ public class ViewAlbum extends AppCompatActivity {
                 cursor.close();
         }
         return null;
+    }
+
+    public void openViewImage(int pos) {
+        Intent intent = new Intent(this, ViewImage.class);
+        startActivity(intent);
     }
 
 }
