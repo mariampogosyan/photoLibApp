@@ -2,9 +2,11 @@ package com.example.masha.photoalbumapp52;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -23,6 +25,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -102,6 +107,16 @@ public class ViewAlbum extends AppCompatActivity {
                 //a.add(1, a.get(position));
                 //gridView.setAdapter(new GridAdapter(Photos.this, a,width));
                 //startActivity(new Intent(Photos.this, ViewImage.class).putExtra("Bitmapimg", a.get(position)));
+            }
+        });
+
+        gv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //gview.itemLongClick(position);
+                imgpos = position;
+                return false;
             }
         });
 
@@ -319,6 +334,60 @@ public class ViewAlbum extends AppCompatActivity {
     public void openViewImage(int pos) {
         Intent intent = new Intent(this, ViewImage.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu_gridview, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.copy:
+                Toast.makeText(ViewAlbum.this, "Copy was clicked", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.delete:
+                Toast.makeText(ViewAlbum.this, "Delete was clicked", Toast.LENGTH_SHORT).show();
+
+                AlertDialog.Builder b = new AlertDialog.Builder(c);
+                b.setMessage("Are you sure you want to delete?");
+                b.setCancelable(true);
+
+                b.setPositiveButton(
+                        "Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                PhotoAlbum.albums.get(pos).getPhotos().remove(imgpos);
+                                showImg(PhotoAlbum.albums.get(pos).getPhotos());
+                                try {
+                                    Album.make(PhotoAlbum.albums, c);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                dialog.cancel();
+                            }
+                        });
+
+                b.setNegativeButton(
+                        "No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog a = b.create();
+                a.show();
+                break;
+
+            case R.id.move:
+                Toast.makeText(ViewAlbum.this, "move was clicked", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onContextItemSelected(item);
     }
 
 }

@@ -90,7 +90,7 @@ public class ViewImage extends ActionBarActivity {
             Bitmap bitmap = va.bitmaps.get(va.imgpos);
             imageView.setImageBitmap(bitmap);
         } else {
-            va.imgpos = 0;
+            va.imgpos = va.bitmaps.size();
         }
     }
 
@@ -103,7 +103,7 @@ public class ViewImage extends ActionBarActivity {
             Bitmap bitmap = va.bitmaps.get(va.imgpos);
             imageView.setImageBitmap(bitmap);
         } else {
-            va.imgpos = va.bitmaps.size();
+            va.imgpos = 0;
         }
     }
 }
