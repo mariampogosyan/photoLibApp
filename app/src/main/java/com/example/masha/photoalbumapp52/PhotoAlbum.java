@@ -8,17 +8,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
-import android.util.SparseBooleanArray;
-import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -63,23 +58,18 @@ public class PhotoAlbum extends AppCompatActivity {
         lv = (ListView) findViewById(R.id.lv);
         registerForContextMenu(lv);
 
+
+
+
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                selectedItem = (Album) parent.getItemAtPosition(position);
+                pos = position;
+                openPhotoView(pos);
+
             }
         });
-
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -100,6 +90,11 @@ public class PhotoAlbum extends AppCompatActivity {
                         //Album tmp = new Album();
                         String name =input.getText().toString();
                        // tmp.setAlbumName(name);
+                        if(!duplicate(name)){
+                            Toast.makeText(context, "Album already exists.", Toast.LENGTH_LONG).show();
+                            dialog.cancel();
+                        } else {
+
                         Album a = new Album(name);
                         if(!albums.contains(a)) {
                             albums.add(a);
@@ -111,8 +106,9 @@ public class PhotoAlbum extends AppCompatActivity {
                         }
                       //  arrayAdapter = new ArrayAdapter<Album>(context,R.layout.album,albums);
                        // albumNames.setAdapter(arrayAdapter);
-                    }
+                    }}
                 });
+
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -149,22 +145,38 @@ public class PhotoAlbum extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.rename:
-                //Toast.makeText(Home.this, "Rename was clicked", Toast.LENGTH_SHORT).show();
-                String s = "pretecnd";
-                Album dummy = new Album(s);
-                if(!albums.contains(dummy)) {
-                    albums.remove(pos);
-                    albums.add(pos, dummy);
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Enter new name:");
 
-                    try {
-                        Album.make(albums, context);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                final EditText input = new EditText(context);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String name =input.getText().toString();
+                        if(!duplicate(name)){
+                            Toast.makeText(context, "Album already exists.", Toast.LENGTH_LONG).show();
+                            dialog.cancel();
+                        } else {
+
+                            Album a = albums.get(pos);
+                            a.setName(name);
+                            try {
+                                Album.make(albums, context);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }}
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
                     }
+                });
 
-                    lv.setAdapter(
-                            new ArrayAdapter<Album>(PhotoAlbum.this, android.R.layout.simple_list_item_1, albums));
-                }
+                builder.show();
+
                 break;
             case R.id.delete:
                 //Toast.makeText(Home.this, "Delete was clicked", Toast.LENGTH_SHORT).show();
@@ -205,49 +217,30 @@ public class PhotoAlbum extends AppCompatActivity {
     }
 
 
-
-
-    /*private void deleteItem() {
-        SparseBooleanArray arr = lv.getCheckedItemPositions();
-        //String str="";
-        // gather songs in a to-delete list
-        ArrayList<Album> deleteAlbums = new ArrayList<Album>();
-        for (int i=0; i < arr.size(); i++) {
-            if (arr.valueAt(i)) {
-                Album album = (Album)lv.getItemAtPosition(
-                        arr.keyAt(i));
-                //str += song.id + ";";
-                deleteAlbums.add(album);
-            }
-        }
-        for (Album album: deleteAlbums) {
-            try {
-                Album.make(Home.albums, context);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        //Toast.makeText(SongLib.this,str,Toast.LENGTH_LONG).show();
-      lv.setAdapter(new ArrayAdapter<Album>(this, android.R.layout.simple_list_item_1,albums));
-
-    }*/
-
-    public void viewAlbum (int pos) {
-        Intent intent = new Intent(this, ViewAlbum.class);
-
-        Album album = albums.get(pos);
-        Bundle bundle = new Bundle();
-        bundle.putString(ViewAlbum.ALBUM_NAME, album.albumName);
-        bundle.putInt(ViewAlbum.ALBUM_ID, album.id);
-        intent.putExtras(bundle);
-
-        startActivity(intent);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+    public void openPhotoView(int pos){
+        Intent intent = new Intent(this, ViewAlbum.class);
+        intent.putExtra("pos", pos);
+        startActivity(intent);
+    }
+    public boolean duplicate(String name){
+        if(albums.size()==0){
+            return true;
+        }
+
+        for(Album album: albums){
+            if(name.equals(album.getAlbumName())){
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
 }

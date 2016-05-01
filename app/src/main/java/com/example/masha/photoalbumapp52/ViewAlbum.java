@@ -1,8 +1,12 @@
 package com.example.masha.photoalbumapp52;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +15,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,8 +26,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +45,10 @@ public class ViewAlbum extends AppCompatActivity {
     private Album album;
     private GridView gv;
     private int albumID;
+    private static int pos;
     private AlbumList albumList;
+    public  static ArrayList<Bitmap> bitmaps = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +68,14 @@ public class ViewAlbum extends AppCompatActivity {
         albumName = (TextView)findViewById(R.id.album_name);
         // check if Bundle was passed, and populate fields
         Bundle bundle = getIntent().getExtras();
-        albumID = -1;
-        if (bundle != null) {
-            albumID = bundle.getInt(ALBUM_ID);
-            albumName.setText(bundle.getString(ALBUM_NAME));
-        }
+        pos = (int) bundle.get("pos");
+//        albumID = -1;
+//        if (bundle != null) {
+//            albumID = bundle.getInt(ALBUM_ID);
+//            albumName.setText(bundle.getString(ALBUM_NAME));
+//        }
+
+       // gv.setAdapter(new ImageAdapter(this, album.getPhotos()));
 
     }
 
@@ -77,17 +92,21 @@ public class ViewAlbum extends AppCompatActivity {
                                     Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==GET_FROM_GALLERY && resultCode == RESULT_OK) {
-            Uri selectedImageUri = data.getData();
-            String[] projection = {MediaStore.MediaColumns.DATA};
-            CursorLoader cursorLoader = new CursorLoader(this, selectedImageUri, projection, null, null,
-                    null);
-            Cursor cursor = cursorLoader.loadInBackground();
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-            cursor.moveToFirst();
-            String selectedImage = cursor.getString(column_index);
-            Photo p = new Photo(selectedImage);
+        Uri selectedImageUri = data.getData();
+        String selectedImage = getPath(selectedImageUri);
+        Photo p = new Photo(selectedImage);
+        PhotoAlbum.albums.get(pos).addPhoto(p);
+        int z =  PhotoAlbum.albums.get(pos).getSize();
+       // System.out.println(z);
+       showImg(PhotoAlbum.albums.get(pos).getPhotos());
+        Drawable d = Drawable.createFromPath(p.getFileURL());
+            try {
+                Album.make(PhotoAlbum.albums, this);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-          //  Album album = albumList.getAlbums().get(albumID);
+            // Album album = albumList.getAlbums().get(albumID);
            // album.addPhoto(p);
       //      showImg(album.getPhotos());
 //            try {
@@ -106,6 +125,44 @@ public class ViewAlbum extends AppCompatActivity {
 
         }
     }
+    public void showImg(List<Photo> photos) {
+        bitmaps.clear();
+        for(Photo p : photos) {
+            System.out.println(p.getFileURL());
+
+            Bitmap bm;
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(p.getFileURL(), options);
+            final int REQUIRED_SIZE = 1000;
+            int scale = 1;
+            while (options.outWidth / scale / 2 >= REQUIRED_SIZE
+                    && options.outHeight / scale / 2 >= REQUIRED_SIZE)
+                scale *= 2;
+            options.inSampleSize = scale;
+            options.inJustDecodeBounds = false;
+            bm = BitmapFactory.decodeFile(p.getFileURL(), options);
+            bitmaps.add(bm);
+
+        }
+        gv.setAdapter(new ImageAdapter(this, bitmaps));
+    }
+
+    public String getPath(Uri uri) {
+        if( uri == null ) {
+            return null;
+        }
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if( cursor != null ){
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        return uri.getPath();
+}
+
 }
 
 
