@@ -140,6 +140,7 @@ public class ViewAlbum extends AppCompatActivity {
             if(!PhotoAlbum.albums.get(pos).getPhotos().contains(p)) {
                 PhotoAlbum.albums.get(pos).addPhoto(p);
                 showImg(PhotoAlbum.albums.get(pos).getPhotos());
+                System.out.println(PhotoAlbum.albums.size());
                 Drawable d = Drawable.createFromPath(p.getFileURL());
 
                 try {
