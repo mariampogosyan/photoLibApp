@@ -3,6 +3,7 @@ package com.example.masha.photoalbumapp52;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,7 +18,8 @@ import java.util.ArrayList;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Bitmap> photos;
-
+    int height;
+    int width;
 
 //    public ImageAdapter(Context c) {
 //        mContext = c;
@@ -27,31 +29,33 @@ public class ImageAdapter extends BaseAdapter {
 
         mContext = c;
         photos = arrayList;
+        DisplayMetrics metrics = c.getResources().getDisplayMetrics();
+        width = metrics.widthPixels;
+        height = metrics.heightPixels;
     }
     public int getCount() {
-        return 1;
+        return photos.size();
     }
 
     public Object getItem(int position) {
-        return null;
+        return position;
     }
 
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-//        ImageView imageView;
-//        imageView = (ImageView) convertView;
-//        return imageView;
+
+
         ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(150, 150));
+            imageView.setLayoutParams(new GridView.LayoutParams(width/3, width/3));
 
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+            imageView.setPadding(15, 15, 15, 15);
         } else {
             imageView = (ImageView) convertView;
         }

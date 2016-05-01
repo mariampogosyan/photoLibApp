@@ -76,7 +76,9 @@ public class ViewAlbum extends AppCompatActivity {
         // check if Bundle was passed, and populate fields
         Bundle bundle = getIntent().getExtras();
         pos = (int) bundle.get("pos");
-
+        if(!PhotoAlbum.albums.get(pos).getPhotos().isEmpty()){
+            showImg(PhotoAlbum.albums.get(pos).getPhotos());
+        }
         //gv.setAdapter(new ImageAdapter(this, album.getPhotos()));
 
     }
