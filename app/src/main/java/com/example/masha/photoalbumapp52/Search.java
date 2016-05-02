@@ -59,19 +59,17 @@ public class Search extends ActionBarActivity {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String text = editText.getText().toString();
-                if (text.matches("")) {
-                    gv.setAdapter(null);
-                }
                 String[] pq = s.toString().split(",");
                 List<String> st = Arrays.asList(pq);
                 List<Photo> photo = SearchUtil.getAllResults(PhotoAlbum.albums, st);
                 Album tmp = new Album("tmp");
                 tmp.setallp(photo);
 
-
-                if(photo.size()>0){
+                System.out.println(text);
+                if(photo.size()>0 && !text.matches("")){
                     showImg(photo);
-
+                } else {
+                    gv.setAdapter(null);
                 }
                 editText.setFocusable(true);
             }
