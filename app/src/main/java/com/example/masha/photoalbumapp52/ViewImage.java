@@ -51,29 +51,8 @@ public class ViewImage extends AppCompatActivity {
 
         toolbar = (Toolbar)findViewById(R.id.my_toolbar);
         toolbar.inflateMenu(R.menu.tag_options);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-
-                    case R.id.add_loc: {
-                        Toast.makeText(context, "move was clicked", Toast.LENGTH_SHORT).show();
-
-                        tag("place");
-                        return true;
-                    }
-                    case R.id.add_per:
-                        tag("person");
-                        return true;
-
-                    case R.id.delete_tag:
-                        return false;
-                }
-                return true;
-            }
 
 
-        });
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Bitmap bitmap = va.bitmaps.get(va.imgpos);
@@ -126,23 +105,7 @@ public class ViewImage extends AppCompatActivity {
                     }
                 });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //add person tags
-        TextView tagPeople = (TextView)findViewById(R.id.tagPeople);
-        tagPeople.setOnClickListener(new OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                tag("person");
-            }
-        });
 
-        //add place tags
-        TextView tagPlaces = (TextView)findViewById(R.id.tagPlaces);
-        tagPlaces.setOnClickListener(new OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                tag("place");
-            }
-        });
 
     }
     @Override
@@ -160,6 +123,20 @@ public class ViewImage extends AppCompatActivity {
             NavUtils.navigateUpFromSameTask(this);
             return true;
 
+        }
+        if(id == R.id.add_loc) {
+            Toast.makeText(context, "move was clicked", Toast.LENGTH_SHORT).show();
+
+            tag("place");
+            return true;
+        }
+        if (id == R.id.add_per) {
+            tag("person");
+            return true;
+        }
+
+        if (id == R.id.delete_tag) {
+            return true;
         }
         return true;
     }
@@ -203,21 +180,21 @@ public class ViewImage extends AppCompatActivity {
 
                 if(type.equalsIgnoreCase("person")){
                     p.addPersonTag(value);
-//                    try {
-//                        AlbumList.albumList.store();
-//                    } catch (IOException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    }
+                    try {
+                        Album.make(PhotoAlbum.albums, context);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                 }
                 else if(type.equalsIgnoreCase("place")){
                     p.addPlaceTag(value);
-//                    try {
-//                        AlbumList.albumList.store();
-//                    } catch (IOException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    }
+                    try {
+                        Album.make(PhotoAlbum.albums, context);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                 }
                 showTagList();
             }
