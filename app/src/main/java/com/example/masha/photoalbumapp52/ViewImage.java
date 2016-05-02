@@ -1,42 +1,56 @@
 package com.example.masha.photoalbumapp52;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.view.View.OnClickListener;
+
+import java.io.IOException;
+
 
 /**
  * Created by stephen.dacayanan on 5/1/2016.
  */
-public class ViewImage extends ActionBarActivity {
+public class ViewImage extends AppCompatActivity {
     ViewAlbum va;
     ImageView imageView;
     Context context;
+    TextView place, people;
     Toolbar toolbar;
     boolean isclicked = false;
     private int min_distance = 100;
     private float downX, downY, upX, upY;
-    TextView tv;
+    Photo p = PhotoAlbum.albums.get(ViewAlbum.pos).getPhotos().get(ViewAlbum.imgpos);
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_image);
         context = this;
         imageView = (ImageView)findViewById(R.id.imageView);
-        tv = (TextView)findViewById(R.id.tags);
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        Photo p = PhotoAlbum.albums.get(ViewAlbum.pos).getPhotos().get(ViewAlbum.imgpos);
-        tv.setText("Tags:\n");
+        place = (TextView)findViewById(R.id.tagPlaces);
+        people = (TextView)findViewById(R.id.tagPeople);
+        place.setText("Places" + p.getPlaceTags());
+        people.setText("People" + p.getPersonTags());
 
-        for (int x = 0; x< va.bitmaps.size(); x++){
-            tv.append(p.getTags()+"\n");
-        }
+        toolbar = (Toolbar)findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Bitmap bitmap = va.bitmaps.get(va.imgpos);
         imageView.setImageBitmap(bitmap);
         imageView.setOnTouchListener(
@@ -86,6 +100,43 @@ public class ViewImage extends ActionBarActivity {
                         return false;
                     }
                 });
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //add person tags
+        TextView tagPeople = (TextView)findViewById(R.id.tagPeople);
+        tagPeople.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                tag("person");
+            }
+        });
+
+        //add place tags
+        TextView tagPlaces = (TextView)findViewById(R.id.tagPlaces);
+        tagPlaces.setOnClickListener(new OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                tag("place");
+            }
+        });
+
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.tag_options, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
+            return true;
+
+        }
+        return true;
     }
 
     public void LeftToRightSwipe(){
@@ -113,4 +164,52 @@ public class ViewImage extends ActionBarActivity {
             va.imgpos = 0;
         }
     }
+    private void tag(final String type){
+
+        AlertDialog.Builder tag = new AlertDialog.Builder(this);
+        tag.setTitle("Enter "+type+" name:");
+        final EditText input = new EditText(this);
+        tag.setView(input);
+
+        tag.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String value = input.getText().toString();
+
+                if(type.equalsIgnoreCase("person")){
+                    p.addPersonTag(value);
+//                    try {
+//                        AlbumList.albumList.store();
+//                    } catch (IOException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
+                }
+                else if(type.equalsIgnoreCase("place")){
+                    p.addPlaceTag(value);
+//                    try {
+//                        AlbumList.albumList.store();
+//                    } catch (IOException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
+                }
+                showTagList();
+            }
+        });
+        tag.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Canceled
+            }
+        });
+        tag.show();
+    }
+    protected void showTagList() {
+        place.setText("Places" + p.getPlaceTags());
+        people.setText("People" + p.getPersonTags());
+
+    }
+
+
 }

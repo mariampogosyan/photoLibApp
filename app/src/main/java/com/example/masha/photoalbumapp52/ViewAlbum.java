@@ -77,6 +77,7 @@ public class ViewAlbum extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         c = this;
         gv = (GridView) findViewById(R.id.gridView);
@@ -126,7 +127,6 @@ public class ViewAlbum extends AppCompatActivity {
 
         registerForContextMenu(gv);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
     }

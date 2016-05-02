@@ -3,66 +3,76 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+    </android.support.v7.widget.Toolbar>
+
 
     <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
         android:id="@+id/imageView"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:layout_above="@+id/tagPeople"
         android:background="#000000" />
 
-
     <TextView
-        android:id="@+id/tags"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/myImageView"
-        android:layout_alignTop="@+id/myImageView"
-        android:layout_alignRight="@+id/myImageView"
-        android:layout_alignBottom="@+id/myImageView"
-        android:layout_margin="1dp"
-        android:gravity="center"
-        android:textColor="@color/MyGreen" />
-   <!-- <TextView
-        android:id="@+id/peopletag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/imageView"
-        android:layout_alignTop="@+id/imageView"
-        android:layout_alignRight="@+id/imageView"
-        android:layout_alignBottom="@+id/imageView"
-        android:text="People: "
-        android:textColor="#ffffff"
-        android:gravity="bottom"
-        android:layout_marginBottom="@dimen/person"
-        android:layout_marginLeft="@dimen/location"
-        android:textSize="@dimen/size_font" />
-
-    <TextView
-        android:id="@+id/locationtag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/imageView"
-        android:layout_alignTop="@+id/imageView"
-        android:layout_alignRight="@+id/imageView"
-        android:layout_alignBottom="@+id/imageView"
-        android:text="Location: "
-        android:textColor="#ffffff"
-        android:gravity="bottom"
-        android:layout_margin="@dimen/location"
-        android:textSize="@dimen/size_font" /> -->
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#000000"
-        android:elevation="4dp"
-        android:visibility="gone"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        android:layout_height="43dp"
+        android:text="New Text"
+        android:id="@+id/tagPeople"
+        android:layout_above="@+id/tagPlaces"
+
+        android:layout_gravity="bottom" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="41dp"
+        android:text="New Text"
+        android:id="@+id/tagPlaces"
+        android:layout_gravity="bottom" />
+
+
+    <!-- <TextView
+         android:id="@+id/peopletag"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/imageView"
+         android:layout_alignTop="@+id/imageView"
+         android:layout_alignRight="@+id/imageView"
+         android:layout_alignBottom="@+id/imageView"
+         android:text="People: "
+         android:textColor="#ffffff"
+         android:gravity="bottom"
+         android:layout_marginBottom="@dimen/person"
+         android:layout_marginLeft="@dimen/location"
+         android:textSize="@dimen/size_font" />
+
+     <TextView
+         android:id="@+id/locationtag"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/imageView"
+         android:layout_alignTop="@+id/imageView"
+         android:layout_alignRight="@+id/imageView"
+         android:layout_alignBottom="@+id/imageView"
+         android:text="Location: "
+         android:textColor="#ffffff"
+         android:gravity="bottom"
+         android:layout_margin="@dimen/location"
+         android:textSize="@dimen/size_font" /> -->
+
 
 
 </LinearLayout>

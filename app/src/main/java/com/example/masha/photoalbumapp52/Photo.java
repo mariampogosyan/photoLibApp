@@ -11,12 +11,14 @@ public class Photo implements Serializable {
         private String fileURL;
         private int id;
         private ArrayList<Tag> tags;
+        ArrayList<String> personTag, placeTag;
 
 
 
         public Photo(String fileURL){
             this.fileURL = fileURL;
-            this.tags = new ArrayList<Tag>();
+            this.personTag = new ArrayList<String>();
+            this.placeTag = new ArrayList<String>();
 
         }
 
@@ -36,27 +38,20 @@ public class Photo implements Serializable {
         public void setFileURL(String fileURL) {
             this.fileURL = fileURL;
         }
-        public ArrayList<Tag> getTags(){
-            return this.tags;
-        }
-        public boolean hasTag(String tagType, String tagValue) {
-            for (Tag tag : tags) {
-                if (tag.equals(new Tag(tagType, tagValue))) {
-                    return true;
-                }
-            } return false;
-        }
+         public void addPersonTag(String person){
+        personTag.add(person);
+         }
 
-        public void addTag(String tagType, String tagValue) {
-            this.tags.add(new Tag(tagType, tagValue));
-        }
+    public void addPlaceTag(String place){
+        placeTag.add(place);
+    }
 
-        public void deleteTag(String tagType, String tagValue) {
-            this.tags.remove(new Tag(tagType, tagValue));
-        }
+    public ArrayList<String> getPersonTags(){
+        return personTag;
+    }
 
-        public int getSizeOfTags() {
-            return this.tags.size();
-        }
+    public ArrayList<String> getPlaceTags(){
+        return placeTag;
+    }
 
     }
