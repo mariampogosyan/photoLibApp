@@ -19,7 +19,7 @@
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-            <TextView
+            <!--<TextView
                 android:id="@+id/album_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
                 android:paddingLeft="10dp"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:onClick="addPhoto"/>
+                android:onClick="addPhoto"/> -->
 
         </android.support.v7.widget.Toolbar>
 

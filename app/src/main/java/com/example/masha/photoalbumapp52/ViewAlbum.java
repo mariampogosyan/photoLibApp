@@ -21,12 +21,14 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,7 +58,7 @@ public class ViewAlbum extends AppCompatActivity {
     private static final int KITKAT_INTENT = 3;
 
 
-    private TextView albumName;
+    //private TextView albumName;
     private Album album;
     private GridView gv;
     private int albumID;
@@ -84,7 +86,7 @@ public class ViewAlbum extends AppCompatActivity {
             Toast.makeText(this, "Error loading albums", Toast.LENGTH_LONG)
                     .show();
         }
-        albumName = (TextView)findViewById(R.id.album_name);
+        //albumName = (TextView)findViewById(R.id.album_name);
         // check if Bundle was passed, and populate fields
         Bundle bundle = getIntent().getExtras();
         pos = (int) bundle.get("pos");
@@ -124,12 +126,56 @@ public class ViewAlbum extends AppCompatActivity {
 
         registerForContextMenu(gv);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_view_album, menu);
+        return true;
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         getMenuInflater().inflate(R.menu.context_menu_gridview, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
+            return true;
+        } else if (id == R.id.action_add) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, KITKAT_INTENT);
+                }
+
+
+            } else {
+                Intent intent = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intent.setType("image/*");
+                startActivityForResult(
+                        Intent.createChooser(intent, "Select a gallery"),
+                        GET_FROM_GALLERY);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -207,7 +253,7 @@ public class ViewAlbum extends AppCompatActivity {
         return super.onContextItemSelected(item);
     }
 
-    public void addPhoto(View view) {
+    /*public void addPhoto(View view) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -229,7 +275,7 @@ public class ViewAlbum extends AppCompatActivity {
                     Intent.createChooser(intent, "Select a gallery"),
                     GET_FROM_GALLERY);
         }
-    }
+    }*/
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -252,62 +298,65 @@ public class ViewAlbum extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==GET_FROM_GALLERY && resultCode == RESULT_OK) {
-            Uri selectedImageUri = data.getData();
-            String[] ps = {MediaStore.MediaColumns.DATA};
-            CursorLoader cursorLoader = new CursorLoader(this, selectedImageUri, ps, null, null,
-                    null);
-            Cursor cursor = cursorLoader.loadInBackground();
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-            cursor.moveToFirst();
+        if (resultCode == RESULT_OK) {
+            if(requestCode==GET_FROM_GALLERY) {
+                Uri selectedImageUri = data.getData();
+                String[] ps = {MediaStore.MediaColumns.DATA};
+                CursorLoader cursorLoader = new CursorLoader(this, selectedImageUri, ps, null, null,
+                        null);
+                Cursor cursor = cursorLoader.loadInBackground();
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+                cursor.moveToFirst();
 
-            String selectedImagePath = cursor.getString(column_index);
-            Photo p = new Photo(selectedImagePath);
-            if(!PhotoAlbum.albums.get(pos).getPhotos().contains(p)) {
-                PhotoAlbum.albums.get(pos).addPhoto(p);
-                showImg(PhotoAlbum.albums.get(pos).getPhotos());
-                System.out.println(PhotoAlbum.albums.size());
-                Drawable d = Drawable.createFromPath(p.getFileURL());
+                String selectedImagePath = cursor.getString(column_index);
+                Photo p = new Photo(selectedImagePath);
+                if(!PhotoAlbum.albums.get(pos).getPhotos().contains(p)) {
+                    PhotoAlbum.albums.get(pos).addPhoto(p);
+                    showImg(PhotoAlbum.albums.get(pos).getPhotos());
+                    System.out.println(PhotoAlbum.albums.size());
+                    Drawable d = Drawable.createFromPath(p.getFileURL());
 
-                try {
-                    Album.make(PhotoAlbum.albums, this);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    try {
+                        Album.make(PhotoAlbum.albums, this);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            // Album album = albumList.getAlbums().get(albumID);
-           // album.addPhoto(p);
-      //      showImg(album.getPhotos());
+                // Album album = albumList.getAlbums().get(albumID);
+                // album.addPhoto(p);
+                //      showImg(album.getPhotos());
 //            try {
 //                albumList.addPic(albumID, p);
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
-           // String size = Integer.toString(albumList.sizeCurrent(albumID));
-            //  album.addPhoto(p);
-           // album.getAlbumName();
-           // String size =Integer.toString(album.getPhotos().size());
-          //Toast.makeText(this, size, Toast.LENGTH_SHORT).show();
-       // String id = Integer.toString(albumID);
-          //  Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+                // String size = Integer.toString(albumList.sizeCurrent(albumID));
+                //  album.addPhoto(p);
+                // album.getAlbumName();
+                // String size =Integer.toString(album.getPhotos().size());
+                //Toast.makeText(this, size, Toast.LENGTH_SHORT).show();
+                // String id = Integer.toString(albumID);
+                //  Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
 
 
-        } else if (requestCode == KITKAT_INTENT){
-            final Uri uri = data.getData();
-            String s = getPath(this, uri);
-            Photo p = new Photo(s);
-            if(!PhotoAlbum.albums.get(pos).getPhotos().contains(p)) {
-                PhotoAlbum.albums.get(pos).addPhoto(p);
-                showImg(PhotoAlbum.albums.get(pos).getPhotos());
-                Drawable d = Drawable.createFromPath(p.getFileURL());
-                try {
-                    Album.make(PhotoAlbum.albums, this);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            } else if (requestCode == KITKAT_INTENT){
+                final Uri uri = data.getData();
+                String s = getPath(this, uri);
+                Photo p = new Photo(s);
+                if(!PhotoAlbum.albums.get(pos).getPhotos().contains(p)) {
+                    PhotoAlbum.albums.get(pos).addPhoto(p);
+                    showImg(PhotoAlbum.albums.get(pos).getPhotos());
+                    Drawable d = Drawable.createFromPath(p.getFileURL());
+                    try {
+                        Album.make(PhotoAlbum.albums, this);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
+
     }
     public void showImg(List<Photo> photos) {
     bitmaps.clear();
