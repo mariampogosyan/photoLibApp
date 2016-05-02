@@ -54,6 +54,10 @@ public class Album implements Serializable {
     public int getSize() {
         return photos.size();
     }
+    public void setallp(List<Photo> p) {
+        photos.addAll(p);
+
+    }
 
     public static void make(List<Album> albums, Context c) throws IOException {
 
