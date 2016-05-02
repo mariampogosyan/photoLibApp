@@ -4,7 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:id="@+id/linear">
 
 
     <android.support.v7.widget.Toolbar
@@ -43,36 +44,6 @@
         android:text="New Text"
         android:id="@+id/tagPlaces"
         android:layout_gravity="bottom" />
-
-
-    <!-- <TextView
-         android:id="@+id/peopletag"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignLeft="@+id/imageView"
-         android:layout_alignTop="@+id/imageView"
-         android:layout_alignRight="@+id/imageView"
-         android:layout_alignBottom="@+id/imageView"
-         android:text="People: "
-         android:textColor="#ffffff"
-         android:gravity="bottom"
-         android:layout_marginBottom="@dimen/person"
-         android:layout_marginLeft="@dimen/location"
-         android:textSize="@dimen/size_font" />
-
-     <TextView
-         android:id="@+id/locationtag"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignLeft="@+id/imageView"
-         android:layout_alignTop="@+id/imageView"
-         android:layout_alignRight="@+id/imageView"
-         android:layout_alignBottom="@+id/imageView"
-         android:text="Location: "
-         android:textColor="#ffffff"
-         android:gravity="bottom"
-         android:layout_margin="@dimen/location"
-         android:textSize="@dimen/size_font" /> -->
 
 
 

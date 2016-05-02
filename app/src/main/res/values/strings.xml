@@ -4,7 +4,9 @@
     <string name="search">Search</string>
     <string name="addLoc">Location</string>
     <string name="addPer">People</string>
-    <string name="delete">Delete Tag</string>
+    <string name="delete">Delete</string>
+    <string name="deleteP">Delete Location</string>
+    <string name="deleteL">Delete People</string>
     <string name="add">Add</string>
 
 </resources>

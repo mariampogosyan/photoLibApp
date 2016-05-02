@@ -3,6 +3,7 @@ package com.example.masha.photoalbumapp52;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
@@ -14,8 +15,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -32,6 +35,7 @@ public class ViewImage extends AppCompatActivity {
     Context context;
     TextView place, people;
     Toolbar toolbar;
+    LinearLayout linear;
     boolean isclicked = false;
     private int min_distance = 100;
     private float downX, downY, upX, upY;
@@ -43,6 +47,7 @@ public class ViewImage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_image);
         context = this;
+        linear = (LinearLayout) findViewById(R.id.linear);
         imageView = (ImageView)findViewById(R.id.imageView);
         place = (TextView)findViewById(R.id.tagPlaces);
         people = (TextView)findViewById(R.id.tagPeople);
@@ -135,7 +140,60 @@ public class ViewImage extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.delete_tag) {
+        if (id == R.id.delete_tagL) {
+            Toast.makeText(context, "move was clicked", Toast.LENGTH_SHORT).show();
+
+            final ArrayAdapter<String> al = new ArrayAdapter<>(ViewImage.this, android.R.layout.simple_list_item_1, p.getPersonTags());
+            android.app.AlertDialog.Builder m = new android.app.AlertDialog.Builder(this);
+            m.setNegativeButton(
+                    "cancel",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            m.setAdapter(al, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which){
+                    p.getPersonTags().remove(which);
+                    showTagList();
+                    try {
+                        Album.make(PhotoAlbum.albums, context);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    dialog.cancel();
+                }
+            });
+            m.show();
+            return true;
+        }
+        if (id == R.id.delete_tagP) {
+            final ArrayAdapter<String> al = new ArrayAdapter<>(ViewImage.this, android.R.layout.simple_list_item_1, p.getPlaceTags());
+            android.app.AlertDialog.Builder m = new android.app.AlertDialog.Builder(this);
+            m.setNegativeButton(
+                    "cancel",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            m.setAdapter(al, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which){
+                    p.getPlaceTags().remove(which);
+                    showTagList();
+                    try {
+                        Album.make(PhotoAlbum.albums, context);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    dialog.cancel();
+                }
+            });
+            m.show();
             return true;
         }
         return true;
