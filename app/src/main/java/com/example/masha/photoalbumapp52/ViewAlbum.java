@@ -89,8 +89,9 @@ public class ViewAlbum extends AppCompatActivity {
         }
         //albumName = (TextView)findViewById(R.id.album_name);
         // check if Bundle was passed, and populate fields
-        Bundle bundle = getIntent().getExtras();
-        pos = (int) bundle.get("pos");
+        //Bundle bundle = getIntent().getExtras();
+        //pos = (int) bundle.get("pos");
+        pos = PhotoAlbum.pos;
         if(!PhotoAlbum.albums.get(pos).getPhotos().isEmpty()){
             showImg(PhotoAlbum.albums.get(pos).getPhotos());
         }
