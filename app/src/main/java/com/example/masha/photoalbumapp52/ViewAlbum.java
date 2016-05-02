@@ -257,10 +257,7 @@ public class ViewAlbum extends AppCompatActivity {
 
                 String selectedImagePath = cursor.getString(column_index);
                 Photo p = new Photo(selectedImagePath);
-                /*
-
-                add here validation
-                 */
+                if (!PhotoAlbum.albums.get(pos).getPhotos().contains(p)) {
                     PhotoAlbum.albums.get(pos).addPhoto(p);
                     showImg(PhotoAlbum.albums.get(pos).getPhotos());
                     System.out.println(PhotoAlbum.albums.size());
@@ -271,30 +268,37 @@ public class ViewAlbum extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                } else {
+                    Toast.makeText(this, "Duplicate Photo in Album. Please try again.", Toast.LENGTH_LONG)
+                            .show();
+                }
 
             } else if (requestCode == KITKAT_INTENT){
                 final Uri uri = data.getData();
                 String s = getPath(this, uri);
                 Photo p = new Photo(s);
-                 /*
-
-                add here validation
-                 */
+                if (!PhotoAlbum.albums.get(pos).getPhotos().contains(p)) {
                     PhotoAlbum.albums.get(pos).addPhoto(p);
                     showImg(PhotoAlbum.albums.get(pos).getPhotos());
+                    System.out.println(PhotoAlbum.albums.size());
                     Drawable d = Drawable.createFromPath(p.getFileURL());
+
                     try {
                         Album.make(PhotoAlbum.albums, this);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                } else {
+                    Toast.makeText(this, "Duplicate Photo in Album. Please try again.", Toast.LENGTH_LONG)
+                            .show();
+                }
 
             }
         }
 
     }
     public void showImg(List<Photo> photos) {
-    bitmaps.clear();
+        bitmaps.clear();
         for(Photo p : photos) {
             System.out.println(p.getFileURL());
 
@@ -405,16 +409,16 @@ public class ViewAlbum extends AppCompatActivity {
         startActivity(intent);
     }
 
-
     public void move(int from, int to) {
          /*
 
-                add here validation
+                NOT DONE.
                  */
-
         Photo move = PhotoAlbum.albums.get(pos).getPhotos().get(to);
-        PhotoAlbum.albums.get(pos).getPhotos().remove(to);
-        PhotoAlbum.albums.get(from).addPhoto(move);
+        if (!PhotoAlbum.albums.get(from).getPhotos().contains(move)) {
+            PhotoAlbum.albums.get(pos).getPhotos().remove(to);
+            PhotoAlbum.albums.get(from).addPhoto(move);
+        }
 
     }
     public boolean isSamePhoto(String path){

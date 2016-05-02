@@ -53,4 +53,11 @@ public class Photo implements Serializable {
         return placeTag;
     }
 
+    public boolean equals(Object o) {
+        if(o == null || !(o instanceof Photo))
+            return false;
+        Photo p = (Photo) o;
+        return getFileURL().equals(p.getFileURL());
+    }
+
     }
