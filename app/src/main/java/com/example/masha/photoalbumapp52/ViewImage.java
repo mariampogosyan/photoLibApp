@@ -238,14 +238,16 @@ public class ViewImage extends AppCompatActivity {
                 String value = input.getText().toString();
 
                 if(type.equalsIgnoreCase("person")){
-                    for(String s: p.getPersonTags()) {
-                        if (value.equalsIgnoreCase(s)) {
-                            Toast.makeText(context, "This tag already exists.", Toast.LENGTH_LONG).show();
-                            break;
-                        } else {
-                            p.addPersonTag(value);
-                        }
-                    }
+                    p.addPersonTag(value);
+
+//                    for(String s: p.getPersonTags()) {
+//                        if (value.equalsIgnoreCase(s)) {
+//                            Toast.makeText(context, "This tag already exists.", Toast.LENGTH_LONG).show();
+//                            break;
+//                        } else {
+//                            p.addPersonTag(value);
+//                        }
+//                    }
                     try {
                         Album.make(PhotoAlbum.albums, context);
                     } catch (IOException e) {
@@ -254,14 +256,15 @@ public class ViewImage extends AppCompatActivity {
 
                 }
                 else if(type.equalsIgnoreCase("place")){
-                    for(String s: p.getPlaceTags()) {
-                        if (value.equalsIgnoreCase(s)) {
-                            Toast.makeText(context, "This tag already exists.", Toast.LENGTH_LONG).show();
-                            break;
-                        } else {
-                            p.addPlaceTag(value);
-                        }
-                    }
+                    p.addPlaceTag(value);
+//                    for(String s: p.getPlaceTags()) {
+//                        if (value.equalsIgnoreCase(s)) {
+//                            Toast.makeText(context, "This tag already exists.", Toast.LENGTH_LONG).show();
+//                            break;
+//                        } else {
+//                            p.addPlaceTag(value);
+//                        }
+//                    }
                     try {
                         Album.make(PhotoAlbum.albums, context);
                     } catch (IOException e) {
