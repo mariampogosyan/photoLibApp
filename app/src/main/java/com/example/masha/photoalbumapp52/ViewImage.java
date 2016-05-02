@@ -21,15 +21,22 @@ public class ViewImage extends ActionBarActivity {
     boolean isclicked = false;
     private int min_distance = 100;
     private float downX, downY, upX, upY;
-
+    TextView tv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_image);
         context = this;
         imageView = (ImageView)findViewById(R.id.imageView);
+        tv = (TextView)findViewById(R.id.tags);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Photo p = PhotoAlbum.albums.get(ViewAlbum.pos).getPhotos().get(ViewAlbum.imgpos);
+        tv.setText("Tags:\n");
+
+        for (int x = 0; x< va.bitmaps.size(); x++){
+            tv.append(p.getTags()+"\n");
+        }
         Bitmap bitmap = va.bitmaps.get(va.imgpos);
         imageView.setImageBitmap(bitmap);
         imageView.setOnTouchListener(

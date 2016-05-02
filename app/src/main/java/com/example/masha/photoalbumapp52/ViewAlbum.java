@@ -62,7 +62,7 @@ public class ViewAlbum extends AppCompatActivity {
     private Album album;
     private GridView gv;
     private int albumID;
-    private static int pos;
+    public static int pos;
     public static int imgpos;
 
     private AlbumList albumList;

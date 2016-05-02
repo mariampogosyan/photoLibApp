@@ -14,7 +14,17 @@
         android:background="#000000" />
 
 
-
+    <TextView
+        android:id="@+id/tags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/myImageView"
+        android:layout_alignTop="@+id/myImageView"
+        android:layout_alignRight="@+id/myImageView"
+        android:layout_alignBottom="@+id/myImageView"
+        android:layout_margin="1dp"
+        android:gravity="center"
+        android:textColor="@color/MyGreen" />
    <!-- <TextView
         android:id="@+id/peopletag"
         android:layout_width="wrap_content"
