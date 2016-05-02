@@ -405,11 +405,13 @@ public class ViewAlbum extends AppCompatActivity {
         startActivity(intent);
     }
 
+
     public void move(int from, int to) {
          /*
 
                 add here validation
                  */
+
         Photo move = PhotoAlbum.albums.get(pos).getPhotos().get(to);
         PhotoAlbum.albums.get(pos).getPhotos().remove(to);
         PhotoAlbum.albums.get(from).addPhoto(move);

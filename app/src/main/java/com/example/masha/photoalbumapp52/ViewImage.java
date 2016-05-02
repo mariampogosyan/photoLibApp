@@ -127,7 +127,6 @@ public class ViewImage extends AppCompatActivity {
 
         }
         if(id == R.id.add_loc) {
-            Toast.makeText(context, "move was clicked", Toast.LENGTH_SHORT).show();
 
             tag("place");
             return true;
@@ -138,7 +137,6 @@ public class ViewImage extends AppCompatActivity {
         }
 
         if (id == R.id.delete_tagL) {
-            Toast.makeText(context, "move was clicked", Toast.LENGTH_SHORT).show();
 
             final ArrayAdapter<String> al = new ArrayAdapter<>(ViewImage.this, android.R.layout.simple_list_item_1, p.getPersonTags());
             android.app.AlertDialog.Builder m = new android.app.AlertDialog.Builder(this);
