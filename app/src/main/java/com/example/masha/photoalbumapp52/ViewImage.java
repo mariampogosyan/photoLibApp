@@ -35,7 +35,7 @@ public class ViewImage extends AppCompatActivity {
     Context context;
     TextView place, people;
     Toolbar toolbar;
-    LinearLayout linear;
+    //LinearLayout linear;
     boolean isclicked = false;
     private int min_distance = 100;
     private float downX, downY, upX, upY;
@@ -47,7 +47,7 @@ public class ViewImage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_image);
         context = this;
-        linear = (LinearLayout) findViewById(R.id.linear);
+        //linear = (LinearLayout) findViewById(R.id.linear);
         imageView = (ImageView)findViewById(R.id.imageView);
         place = (TextView)findViewById(R.id.tagPlaces);
         people = (TextView)findViewById(R.id.tagPeople);

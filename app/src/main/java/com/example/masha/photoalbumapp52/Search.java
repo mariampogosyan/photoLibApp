@@ -65,7 +65,7 @@ public class Search extends ActionBarActivity {
                 Album tmp = new Album("tmp");
                 tmp.setallp(photo);
 
-                System.out.println(text);
+                //System.out.println(text);
                 if(photo.size()>0 && !text.matches("")){
                     showImg(photo);
                 } else {
@@ -103,7 +103,7 @@ public class Search extends ActionBarActivity {
     public void showImg(List<Photo> photos) {
         bitmaps.clear();
         for(Photo p : photos) {
-            System.out.println(p.getFileURL());
+            //System.out.println(p.getFileURL());
 
             Bitmap bm;
             BitmapFactory.Options options = new BitmapFactory.Options();
