@@ -47,7 +47,6 @@ public class ViewImage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_image);
         context = this;
-        //linear = (LinearLayout) findViewById(R.id.linear);
         imageView = (ImageView)findViewById(R.id.imageView);
         place = (TextView)findViewById(R.id.tagPlaces);
         people = (TextView)findViewById(R.id.tagPeople);
@@ -115,7 +114,6 @@ public class ViewImage extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.tag_options, menu);
         return true;
     }
@@ -123,7 +121,6 @@ public class ViewImage extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == android.R.id.home) {
             NavUtils.navigateUpFromSameTask(this);
             return true;
@@ -184,7 +181,6 @@ public class ViewImage extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which){
                     p.getPlaceTags().remove(which);
-                    showTagList();
                     try {
                         Album.make(PhotoAlbum.albums, context);
                     } catch (IOException e) {
@@ -207,6 +203,8 @@ public class ViewImage extends AppCompatActivity {
         if (va.imgpos>=0){
             Bitmap bitmap = va.bitmaps.get(va.imgpos);
             imageView.setImageBitmap(bitmap);
+            p = PhotoAlbum.albums.get(ViewAlbum.pos).getPhotos().get(ViewAlbum.imgpos);
+            showTagList();
         } else {
             va.imgpos = va.bitmaps.size();
         }
@@ -220,6 +218,9 @@ public class ViewImage extends AppCompatActivity {
         if(!(va.imgpos>=va.bitmaps.size())) {
             Bitmap bitmap = va.bitmaps.get(va.imgpos);
             imageView.setImageBitmap(bitmap);
+            p = PhotoAlbum.albums.get(ViewAlbum.pos).getPhotos().get(ViewAlbum.imgpos);
+
+            showTagList();
         } else {
             va.imgpos = 0;
         }
@@ -237,7 +238,14 @@ public class ViewImage extends AppCompatActivity {
                 String value = input.getText().toString();
 
                 if(type.equalsIgnoreCase("person")){
-                    p.addPersonTag(value);
+                    for(String s: p.getPersonTags()) {
+                        if (value.equalsIgnoreCase(s)) {
+                            Toast.makeText(context, "This tag already exists.", Toast.LENGTH_LONG).show();
+                            break;
+                        } else {
+                            p.addPersonTag(value);
+                        }
+                    }
                     try {
                         Album.make(PhotoAlbum.albums, context);
                     } catch (IOException e) {
@@ -246,7 +254,14 @@ public class ViewImage extends AppCompatActivity {
 
                 }
                 else if(type.equalsIgnoreCase("place")){
-                    p.addPlaceTag(value);
+                    for(String s: p.getPlaceTags()) {
+                        if (value.equalsIgnoreCase(s)) {
+                            Toast.makeText(context, "This tag already exists.", Toast.LENGTH_LONG).show();
+                            break;
+                        } else {
+                            p.addPlaceTag(value);
+                        }
+                    }
                     try {
                         Album.make(PhotoAlbum.albums, context);
                     } catch (IOException e) {

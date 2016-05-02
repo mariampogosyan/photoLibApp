@@ -57,8 +57,6 @@ public class ViewAlbum extends AppCompatActivity {
     public static final int PERMISSION_REQUEST = 2;
     private static final int KITKAT_INTENT = 3;
 
-
-    //private TextView albumName;
     private Album album;
     private GridView gv;
     private int albumID;
@@ -87,15 +85,10 @@ public class ViewAlbum extends AppCompatActivity {
             Toast.makeText(this, "Error loading albums", Toast.LENGTH_LONG)
                     .show();
         }
-        //albumName = (TextView)findViewById(R.id.album_name);
-        // check if Bundle was passed, and populate fields
-        //Bundle bundle = getIntent().getExtras();
-        //pos = (int) bundle.get("pos");
         pos = PhotoAlbum.pos;
         if(!PhotoAlbum.albums.get(pos).getPhotos().isEmpty()){
             showImg(PhotoAlbum.albums.get(pos).getPhotos());
         }
-        //gv.setAdapter(new ImageAdapter(this, album.getPhotos()));
 
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -103,28 +96,8 @@ public class ViewAlbum extends AppCompatActivity {
 
                 imgpos = position;
                 openViewImage(imgpos);
-
-
-
-                //gview.itemClick(position, context);
-                //Toast.makeText(Photos.this, "Deep", Toast.LENGTH_SHORT).show();
-
-
-                //a.add(1, a.get(position));
-                //gridView.setAdapter(new GridAdapter(Photos.this, a,width));
-                //startActivity(new Intent(Photos.this, ViewImage.class).putExtra("Bitmapimg", a.get(position)));
             }
         });
-
-        /*gv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                //gview.itemLongClick(position);
-                imgpos = position;
-                return false;
-            }
-        });*/
 
         registerForContextMenu(gv);
 
@@ -182,9 +155,6 @@ public class ViewAlbum extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.copy:
-                Toast.makeText(ViewAlbum.this, "Copy was clicked", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.delete:
                 Toast.makeText(ViewAlbum.this, "Delete was clicked", Toast.LENGTH_SHORT).show();
 
@@ -248,35 +218,11 @@ public class ViewAlbum extends AppCompatActivity {
                 m.setTitle("Select which album to move to");
                 AlertDialog n = m.create();
                 n.show();
-                Toast.makeText(ViewAlbum.this, "move was clicked", Toast.LENGTH_SHORT).show();
                 break;
         }
         return super.onContextItemSelected(item);
     }
 
-    /*public void addPhoto(View view) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST);
-            } else {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("image/*");
-                startActivityForResult(intent, KITKAT_INTENT);
-            }
-
-
-        } else {
-            Intent intent = new Intent(
-                    Intent.ACTION_PICK,
-                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setType("image/*");
-            startActivityForResult(
-                    Intent.createChooser(intent, "Select a gallery"),
-                    GET_FROM_GALLERY);
-        }
-    }*/
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -311,7 +257,10 @@ public class ViewAlbum extends AppCompatActivity {
 
                 String selectedImagePath = cursor.getString(column_index);
                 Photo p = new Photo(selectedImagePath);
-                if(!PhotoAlbum.albums.get(pos).getPhotos().contains(p)) {
+                /*
+
+                add here validation
+                 */
                     PhotoAlbum.albums.get(pos).addPhoto(p);
                     showImg(PhotoAlbum.albums.get(pos).getPhotos());
                     System.out.println(PhotoAlbum.albums.size());
@@ -322,30 +271,15 @@ public class ViewAlbum extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
-
-                // Album album = albumList.getAlbums().get(albumID);
-                // album.addPhoto(p);
-                //      showImg(album.getPhotos());
-//            try {
-//                albumList.addPic(albumID, p);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-                // String size = Integer.toString(albumList.sizeCurrent(albumID));
-                //  album.addPhoto(p);
-                // album.getAlbumName();
-                // String size =Integer.toString(album.getPhotos().size());
-                //Toast.makeText(this, size, Toast.LENGTH_SHORT).show();
-                // String id = Integer.toString(albumID);
-                //  Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
-
 
             } else if (requestCode == KITKAT_INTENT){
                 final Uri uri = data.getData();
                 String s = getPath(this, uri);
                 Photo p = new Photo(s);
-                if(!PhotoAlbum.albums.get(pos).getPhotos().contains(p)) {
+                 /*
+
+                add here validation
+                 */
                     PhotoAlbum.albums.get(pos).addPhoto(p);
                     showImg(PhotoAlbum.albums.get(pos).getPhotos());
                     Drawable d = Drawable.createFromPath(p.getFileURL());
@@ -354,7 +288,7 @@ public class ViewAlbum extends AppCompatActivity {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
+
             }
         }
 
@@ -471,16 +405,28 @@ public class ViewAlbum extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void move(int alin, int phin) {
-        //alin is album you want to move to
-        // phin is photo you want to move
-        Photo move = PhotoAlbum.albums.get(pos).getPhotos().get(phin);
-        boolean should = PhotoAlbum.albums.get(alin).getPhotos().contains(move);
-        if(!should){
-            PhotoAlbum.albums.get(pos).getPhotos().remove(phin);
-            PhotoAlbum.albums.get(alin).addPhoto(move);
-        }
+    public void move(int from, int to) {
+         /*
+
+                add here validation
+                 */
+        Photo move = PhotoAlbum.albums.get(pos).getPhotos().get(to);
+        PhotoAlbum.albums.get(pos).getPhotos().remove(to);
+        PhotoAlbum.albums.get(from).addPhoto(move);
+
     }
+    public boolean isSamePhoto(String path){
+        ArrayList<Photo> tocheck = PhotoAlbum.albums.get(pos).getPhotos();
+        for ( Photo ph : tocheck) {
+            if (ph.getFileURL().equalsIgnoreCase(path)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 }
 

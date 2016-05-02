@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,7 +25,7 @@ import java.util.List;
 /**
  * Created by stephen.dacayanan on 5/1/2016.
  */
-public class Search extends ActionBarActivity {
+public class Search extends AppCompatActivity {
 
     EditText editText;
     Context c;

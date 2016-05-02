@@ -10,7 +10,6 @@ public class Photo implements Serializable {
         private String photoName;
         private String fileURL;
         private int id;
-        private ArrayList<Tag> tags;
         ArrayList<String> personTag, placeTag;
 
 
