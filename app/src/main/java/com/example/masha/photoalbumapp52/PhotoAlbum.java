@@ -223,6 +223,19 @@ public class PhotoAlbum extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id ==R.id.action_search) {
+            Intent intent = new Intent(this, Search.class);
+            startActivity(intent);
+            return  true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
     public void openPhotoView(int pos){
         Intent intent = new Intent(this, ViewAlbum.class);
         intent.putExtra("pos", pos);
@@ -242,5 +255,7 @@ public class PhotoAlbum extends AppCompatActivity {
         return true;
 
     }
+
+
 
 }
