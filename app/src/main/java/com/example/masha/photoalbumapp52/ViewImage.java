@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -49,6 +50,30 @@ public class ViewImage extends AppCompatActivity {
         people.setText("People" + p.getPersonTags());
 
         toolbar = (Toolbar)findViewById(R.id.my_toolbar);
+        toolbar.inflateMenu(R.menu.tag_options);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+
+                    case R.id.add_loc: {
+                        Toast.makeText(context, "move was clicked", Toast.LENGTH_SHORT).show();
+
+                        tag("place");
+                        return true;
+                    }
+                    case R.id.add_per:
+                        tag("person");
+                        return true;
+
+                    case R.id.delete_tag:
+                        return false;
+                }
+                return true;
+            }
+
+
+        });
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Bitmap bitmap = va.bitmaps.get(va.imgpos);
