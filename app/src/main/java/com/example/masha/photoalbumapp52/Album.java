@@ -10,9 +10,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
- * Created by Mariam on 4/24/2016.
+ *  @author Stephen Dacayanan, Mariam Pogosyan
  */
 public class Album implements Serializable {
     public String albumName;

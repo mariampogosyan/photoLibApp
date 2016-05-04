@@ -13,17 +13,13 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 /**
- * Created by stephen.dacayanan on 4/28/2016.
+ *  @author Stephen Dacayanan, Mariam Pogosyan
  */
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Bitmap> photos;
     int height;
     int width;
-
-//    public ImageAdapter(Context c) {
-//        mContext = c;
-//    }
 
     public ImageAdapter(Context c, ArrayList<Bitmap> arrayList) {
 
@@ -59,8 +55,6 @@ public class ImageAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-        //Bitmap b2 = b.createBitmap(b);
-        //b = b.createScaledBitmap(b, 300, 300, true);
         imageView.setImageBitmap(photos.get(position));
 
         return imageView;

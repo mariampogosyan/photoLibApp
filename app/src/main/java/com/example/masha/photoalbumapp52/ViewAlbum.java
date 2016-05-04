@@ -19,53 +19,40 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by stephen.dacayanan on 4/27/2016.
+ *  @author Stephen Dacayanan, Mariam Pogosyan
  */
 public class ViewAlbum extends AppCompatActivity {
-    public static final String ALBUM_NAME = "albumName";
-    public static final String ALBUM_ID = "albumID";
     public static final int GET_FROM_GALLERY = 1;
     public static final int PERMISSION_REQUEST = 2;
     private static final int KITKAT_INTENT = 3;
 
-    private Album album;
     private GridView gv;
-    private int albumID;
     public static int pos;
     public static int imgpos;
 
-    private AlbumList albumList;
     Context c;
     public  static ArrayList<Bitmap> bitmaps = new ArrayList<>();
+
+
 
 
     @Override
@@ -79,12 +66,7 @@ public class ViewAlbum extends AppCompatActivity {
 
         c = this;
         gv = (GridView) findViewById(R.id.gridView);
-        try {
-            albumList = AlbumList.getInstance(this);
-        } catch (IOException e) {
-            Toast.makeText(this, "Error loading albums", Toast.LENGTH_LONG)
-                    .show();
-        }
+
         pos = PhotoAlbum.pos;
         if(!PhotoAlbum.albums.get(pos).getPhotos().isEmpty()){
             showImg(PhotoAlbum.albums.get(pos).getPhotos());
@@ -93,12 +75,10 @@ public class ViewAlbum extends AppCompatActivity {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 imgpos = position;
                 openViewImage(imgpos);
             }
         });
-
         registerForContextMenu(gv);
 
 
@@ -115,6 +95,8 @@ public class ViewAlbum extends AppCompatActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+
         getMenuInflater().inflate(R.menu.context_menu_gridview, menu);
     }
 
@@ -154,10 +136,10 @@ public class ViewAlbum extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        imgpos = info.position;
         switch (item.getItemId()) {
             case R.id.delete:
-                Toast.makeText(ViewAlbum.this, "Delete was clicked", Toast.LENGTH_SHORT).show();
-
                 AlertDialog.Builder b = new AlertDialog.Builder(c);
                 b.setMessage("Are you sure you want to delete?");
                 b.setCancelable(true);
@@ -168,6 +150,7 @@ public class ViewAlbum extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 PhotoAlbum.albums.get(pos).getPhotos().remove(imgpos);
                                 showImg(PhotoAlbum.albums.get(pos).getPhotos());
+                                gv.invalidateViews();
                                 try {
                                     Album.make(PhotoAlbum.albums, c);
                                 } catch (IOException e) {
@@ -204,15 +187,15 @@ public class ViewAlbum extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Album a = al.getItem(which);
-                        move(which, PhotoAlbum.pos);
+                        move(which, imgpos);
                         showImg(PhotoAlbum.albums.get(pos).getPhotos());
+                        gv.invalidateViews();
                         try {
                             Album.make(PhotoAlbum.albums, c);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         dialog.cancel();
-                        Toast.makeText(ViewAlbum.this, a.toString() + " (" + which + ") " + " selected", Toast.LENGTH_SHORT).show();
                     }
                 });
                 m.setTitle("Select which album to move to");
@@ -300,8 +283,6 @@ public class ViewAlbum extends AppCompatActivity {
     public void showImg(List<Photo> photos) {
         bitmaps.clear();
         for(Photo p : photos) {
-            System.out.println(p.getFileURL());
-
             Bitmap bm;
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
@@ -409,28 +390,19 @@ public class ViewAlbum extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void move(int from, int to) {
-         /*
-
-                NOT DONE.
-                 */
-        Photo move = PhotoAlbum.albums.get(pos).getPhotos().get(to);
-        if (!PhotoAlbum.albums.get(from).getPhotos().contains(move)) {
-            PhotoAlbum.albums.get(pos).getPhotos().remove(to);
-            PhotoAlbum.albums.get(from).addPhoto(move);
+    public void move(int which, int what) {
+        Photo move = PhotoAlbum.albums.get(pos).getPhotos().get(what);
+        if (!PhotoAlbum.albums.get(which).getPhotos().contains(move)) {
+            PhotoAlbum.albums.get(pos).getPhotos().remove(what);
+            showImg(PhotoAlbum.albums.get(pos).getPhotos());
+            PhotoAlbum.albums.get(which).addPhoto(move);
+        } else {
+            Toast.makeText(this, "Duplicate Photo in Album. Please try again.", Toast.LENGTH_LONG)
+                    .show();
         }
 
-    }
-    public boolean isSamePhoto(String path){
-        ArrayList<Photo> tocheck = PhotoAlbum.albums.get(pos).getPhotos();
-        for ( Photo ph : tocheck) {
-            if (ph.getFileURL().equalsIgnoreCase(path)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        return true;
+
+
     }
 
 

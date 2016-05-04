@@ -3,14 +3,12 @@ package com.example.masha.photoalbumapp52;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -18,16 +16,14 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.view.View.OnClickListener;
-import android.widget.Toast;
+
 
 import java.io.IOException;
 
 
 /**
- * Created by stephen.dacayanan on 5/1/2016.
+ *  @author Stephen Dacayanan, Mariam Pogosyan
  */
 public class ViewImage extends AppCompatActivity {
     ViewAlbum va;
@@ -35,7 +31,6 @@ public class ViewImage extends AppCompatActivity {
     Context context;
     TextView place, people;
     Toolbar toolbar;
-    //LinearLayout linear;
     boolean isclicked = false;
     private int min_distance = 100;
     private float downX, downY, upX, upY;
@@ -52,6 +47,9 @@ public class ViewImage extends AppCompatActivity {
         people = (TextView)findViewById(R.id.tagPeople);
         place.setText("Places" + p.getPlaceTags());
         people.setText("People" + p.getPersonTags());
+        place.setTypeface(place.getTypeface(), Typeface.BOLD);
+        people.setTypeface(people.getTypeface(), Typeface.BOLD);
+
 
         toolbar = (Toolbar)findViewById(R.id.my_toolbar);
         toolbar.inflateMenu(R.menu.tag_options);
@@ -237,15 +235,6 @@ public class ViewImage extends AppCompatActivity {
 
                 if(type.equalsIgnoreCase("person")){
                     p.addPersonTag(value);
-
-//                    for(String s: p.getPersonTags()) {
-//                        if (value.equalsIgnoreCase(s)) {
-//                            Toast.makeText(context, "This tag already exists.", Toast.LENGTH_LONG).show();
-//                            break;
-//                        } else {
-//                            p.addPersonTag(value);
-//                        }
-//                    }
                     try {
                         Album.make(PhotoAlbum.albums, context);
                     } catch (IOException e) {
@@ -255,14 +244,6 @@ public class ViewImage extends AppCompatActivity {
                 }
                 else if(type.equalsIgnoreCase("place")){
                     p.addPlaceTag(value);
-//                    for(String s: p.getPlaceTags()) {
-//                        if (value.equalsIgnoreCase(s)) {
-//                            Toast.makeText(context, "This tag already exists.", Toast.LENGTH_LONG).show();
-//                            break;
-//                        } else {
-//                            p.addPlaceTag(value);
-//                        }
-//                    }
                     try {
                         Album.make(PhotoAlbum.albums, context);
                     } catch (IOException e) {

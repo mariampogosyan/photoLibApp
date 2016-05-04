@@ -25,11 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Mariam on 4/24/2016.
+ *  @author Stephen Dacayanan, Mariam Pogosyan
  */
 public class PhotoAlbum extends AppCompatActivity {
     Context context;
-    String userResponse;
     public static List<Album> albums = new ArrayList<>();
     private ListView lv;
     private Album selectedItem;

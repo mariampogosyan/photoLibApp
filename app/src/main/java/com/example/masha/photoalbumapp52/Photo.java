@@ -4,15 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by Mariam on 4/24/2016.
+ *  @author Stephen Dacayanan, Mariam Pogosyan
  */
 public class Photo implements Serializable {
         private String photoName;
         private String fileURL;
         private int id;
         ArrayList<String> personTag, placeTag;
-
-
 
         public Photo(String fileURL){
             this.fileURL = fileURL;

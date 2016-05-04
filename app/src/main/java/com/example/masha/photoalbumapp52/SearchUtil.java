@@ -2,19 +2,11 @@ package com.example.masha.photoalbumapp52;
 
 import java.util.ArrayList;
 import java.util.List;
-
 /**
- * Created by stephen.dacayanan on 5/2/2016.
+ *  @author Stephen Dacayanan, Mariam Pogosyan
  */
 public class SearchUtil {
-    /**
-     * list of hashes
-     */
-    //  public static List<Hash> hash = new ArrayList<>();
 
-    /**
-     * private constructor for search
-     */
     private SearchUtil() {
     }
 
@@ -50,11 +42,6 @@ public class SearchUtil {
         return photo;
     }
 
-    /** main search method
-     * @param album list of albums
-     * @param tags list of tags
-     * @return list of photos
-     */
     public static List<Photo> getAllResults(List<Album> album, List<String> tags) {
         List<Photo> photo = searchByPerson(album, tags);
         List<Photo> photos = searchByPlace(album, tags);

@@ -1,17 +1,14 @@
 package com.example.masha.photoalbumapp52;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -23,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by stephen.dacayanan on 5/1/2016.
+ *  @author Stephen Dacayanan, Mariam Pogosyan
  */
 public class Search extends AppCompatActivity {
 
